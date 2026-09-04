@@ -51,7 +51,7 @@ jobs:
           ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Upload APK artifact
-          uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4
         with:
           name: status-bar-studio-debug-apk
           path: android/app/build/outputs/apk/debug/*.apk
