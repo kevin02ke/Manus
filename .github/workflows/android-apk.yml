@@ -44,16 +44,16 @@ jobs:
           cp native/StatusBarOverlayService.java android/app/src/main/java/com/app/statuspulse/StatusBarOverlayService.java
           cp native/status_bar_accessibility_service.xml android/app/src/main/res/xml/status_bar_accessibility_service.xml
 
-      - name: Build release APK
+      - name: Build signed debug APK
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease --no-daemon --stacktrace
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+          uses: actions/upload-artifact@v4
         with:
-          name: status-bar-studio-release-apk
-          path: android/app/build/outputs/apk/release/*.apk
+          name: status-bar-studio-debug-apk
+          path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
           retention-days: 30
