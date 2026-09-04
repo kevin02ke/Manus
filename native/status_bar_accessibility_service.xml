@@ -4,5 +4,4 @@
     android:accessibilityFeedbackType="feedbackGeneric"
     android:notificationTimeout="100"
     android:canRetrieveWindowContent="false"
-    android:description="Displays a customizable One UI 7-inspired status bar overlay."
     android:settingsActivity="com.app.statuspulse.MainActivity" />
