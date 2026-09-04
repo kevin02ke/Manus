@@ -1,0 +1,60 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
+      - name: Install JavaScript dependencies
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Generate Android project
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Inject native status bar overlay
+        run: |
+          mkdir -p android/app/src/main/java/com/app/statuspulse
+          mkdir -p android/app/src/main/res/xml
+          cp native/StatusBarOverlayService.java android/app/src/main/java/com/app/statuspulse/StatusBarOverlayService.java
+          cp native/status_bar_accessibility_service.xml android/app/src/main/res/xml/status_bar_accessibility_service.xml
+
+      - name: Build release APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: status-bar-studio-release-apk
+          path: android/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+          retention-days: 30

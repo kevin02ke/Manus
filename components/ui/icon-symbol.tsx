@@ -20,6 +20,7 @@ const MAPPING = {
   "bell.fill": "notifications",
   "battery.100": "battery-full",
   "wifi": "wifi",
+  "antenna.radiowaves.left.and.right": "signal-cellular-4-bar",
   "clock.fill": "schedule",
   "slider.horizontal.3": "tune",
   "info.circle": "info-outline",

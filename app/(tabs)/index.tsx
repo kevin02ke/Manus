@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
 import {
   Alert,
+  Linking,
   Pressable,
+  Platform,
   ScrollView,
   StyleSheet,
   Switch,
@@ -36,6 +38,13 @@ export default function HomeScreen() {
 
   const showComingSoon = (feature: string) =>
     Alert.alert(feature, "This action is ready for the native Android build.");
+  const openAccessibilitySettings = () => {
+    if (Platform.OS === "android") {
+      Linking.openURL("android.settings.ACCESSIBILITY_SETTINGS").catch(() => showComingSoon("Accessibility settings"));
+    } else {
+      showComingSoon("Accessibility settings");
+    }
+  };
 
   return (
     <ScreenContainer containerClassName="bg-[#F5F7F6]" className="px-5" edges={["top", "left", "right"]}>
@@ -91,16 +100,17 @@ export default function HomeScreen() {
               <FeatureCard icon="wifi" title="Connection" value={showNetwork ? "Wi-Fi + signal" : "Hidden"} color="#3D8EAF" onPress={() => setShowNetwork(!showNetwork)} />
               <FeatureCard icon="bell.fill" title="Notifications" value={showNotifications ? "2 icons shown" : "Hidden"} color="#AF6B9B" onPress={() => setShowNotifications(!showNotifications)} />
             </View>
-            <View style={[styles.infoCard, { backgroundColor: "#E9F4EE" }]}>
+            <Pressable onPress={openAccessibilitySettings} style={({ pressed }) => [styles.infoCard, { backgroundColor: "#E9F4EE" }, pressed && styles.pressed]}>
               <IconSymbol name="hand.tap.fill" size={24} color="#27865A" />
               <View style={styles.infoCopy}><Text style={styles.infoTitle}>Touch the bar</Text><Text style={styles.infoText}>Tap, swipe, or long press your status bar to trigger shortcuts.</Text></View>
               <IconSymbol name="chevron.right" size={20} color="#6F947F" />
-            </View>
+            </Pressable>
           </>
         ) : (
           <>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Customize the look</Text>
             <Text style={[styles.sectionSub, { color: colors.muted }]}>Tune the details until it feels like your phone.</Text>
+            <SettingRow icon="antenna.radiowaves.left.and.right" title="Network label" detail="Always 5G · cosmetic label" onPress={() => showComingSoon("Always 5G label")} />
             <SettingRow icon="clock.fill" title="Clock style" detail="9:41 · 24-hour format" onPress={() => showComingSoon("Clock style")} />
             <SettingRow icon="battery.100" title="Battery indicator" detail={showBattery ? "Icon + percentage" : "Hidden"} onPress={() => setShowBattery(!showBattery)} />
             <SettingRow icon="bell.fill" title="Notification icons" detail={showNotifications ? "Minimal" : "Hidden"} onPress={() => setShowNotifications(!showNotifications)} />
